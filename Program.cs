@@ -1,7 +1,9 @@
 using System;
 using System.Data.SqlClient;
 using Models;
-using System.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace MyProject
 {
@@ -9,36 +11,57 @@ namespace MyProject
     {
         static void Main(string[] args)
         {
+            IConfiguration config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .Build();
+
+            var services = new ServiceCollection();
+
+            services.AddSingleton<IConfiguration>(config);
+
+            services.AddLogging(builder =>
+            {
+                builder.AddConfiguration(config.GetSection("Logging"));
+                builder.AddConsole();
+            });
+
+            services.AddTransient<Usuario>();
+            services.AddTransient<Producto>();
+            services.AddTransient<ProductoVendido>();
+            services.AddTransient<Venta>();
+
+            var serviceProvider = services.BuildServiceProvider();
+
             try
             {
                 // Cadena de conexion a la base de datos
-                string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
+                string connectionString = config.GetConnectionString("MyConnectionString");
 
-                // Probar la conexion a la base de datos
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    Console.WriteLine("Conexion con la base de datos exitosa.");
-                    connection.Close();
+                    var logger = serviceProvider.GetService<ILogger<Program>>();
+                    logger.LogInformation("Conexion con la base de datos exitosa.");
                 }
             }
             catch (SqlException ex)
             {
-                // En caso de que no se pueda conectar a la base de datos, se lanza una excepcion personalizada
-                throw new Exception("No se ha podido conectar a la base de datos.", ex);
+                var logger = serviceProvider.GetService<ILogger<Program>>();
+                logger.LogError(ex, "No se ha podido conectar a la base de datos.");
+                return;
             }
 
             // Creacion de una instancia de Usuario
-            var usuario = new Usuario(1, "John", "Doe", "johndoe", "password", "johndoe@example.com");
+            var usuario = serviceProvider.GetService<Usuario>();
 
             // Creacion de una instancia de Producto
-            var producto = new Producto(1, "Producto 1", 10.5, 20.0, 100, 1);
+            var producto = serviceProvider.GetService<Producto>();
 
             // Creacion de una instancia de ProductoVendido
-            var productoVendido = new ProductoVendido(1, 1, 80, 1);
+            var productoVendido = serviceProvider.GetService<ProductoVendido>();
 
             // Creacion de una instancia de Venta
-            var venta = new Venta(1, "Venta 1", 1);
+            var venta = serviceProvider.GetService<Venta>();
 
             Console.WriteLine("Hello, World!"); // Impresion de un mensaje en la consola
         }

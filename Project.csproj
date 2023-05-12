@@ -9,10 +9,11 @@
 
   <!-- Paquetes utilizados por el proyecto -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" /> <!-- Paquete necesario para ejecutar pruebas unitarias en .NET -->
-    <PackageReference Include="Moq" Version="4.16.1" /> <!-- Paquete utilizado para crear objetos simulados en pruebas unitarias -->
-    <PackageReference Include="NUnit" Version="3.13.2" /> <!-- Framework de pruebas unitarias utilizado -->
-    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" /> <!-- Adaptador utilizado para vincular las pruebas unitarias con el framework NUnit -->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" /> <!-- Paquete para la lectura de configuraciones -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" /> <!-- Paquete para la lectura de configuraciones-->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" /> <!-- Paquete para la inyeccion de dependencias -->
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" /> <!-- Paquete para la configuracion y uso del logging -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" /> <!-- Paquete para la impresion de los logs en la consola -->
   </ItemGroup>
 
   <!-- 
