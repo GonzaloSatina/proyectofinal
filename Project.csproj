@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Propiedades generales del proyecto -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType> <!-- Tipo de salida: Ejecutable -->
+    <TargetFramework>net5.0</TargetFramework> <!-- Plataforma de destino del proyecto: .NET 5.0 -->
+    <LangVersion>9</LangVersion> <!-- Versión del lenguaje utilizado por el proyecto: C# 9 -->
+  </PropertyGroup>
+
+  <!-- Paquetes utilizados por el proyecto -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" /> <!-- Paquete necesario para ejecutar pruebas unitarias en .NET -->
+    <PackageReference Include="Moq" Version="4.16.1" /> <!-- Paquete utilizado para crear objetos simulados en pruebas unitarias -->
+    <PackageReference Include="NUnit" Version="3.13.2" /> <!-- Framework de pruebas unitarias utilizado -->
+    <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" /> <!-- Adaptador utilizado para vincular las pruebas unitarias con el framework NUnit -->
+  </ItemGroup>
+
+  <!-- 
+  Configuración de los archivos de origen y destino de la compilación, incluyendo la 
+  exclusión de archivos específicos, y la configuración de variables adicionales que se 
+  pueden utilizar durante la compilación o en el código.
+  -->
+  <ItemGroup>
+    <Compile Remove="bin\**" /> <!-- Se excluyen todos los archivos dentro de la carpeta bin -->
+    <Compile Remove="obj\**" /> <!-- Se excluyen todos los archivos dentro de la carpeta obj -->
+    <!-- Se incluyen todos los archivos dentro de la carpeta Models -->
+    <Compile Include="Models\**" />
+    <!-- Se incluyen los archivos necesarios de la carpeta Properties -->
+    <Compile Include="Properties\launchSettings.json" />
+    <Compile Include="Properties\Settings.Designer.cs" />
+  </ItemGroup>
+
+  <!-- Referencia al proyecto de base de datos -->
+  <ItemGroup>
+    <ProjectReference Include="Ruta\Al\Proyecto\De\BaseDeDatos.csproj" />
+  </ItemGroup>
+
+</Project>
