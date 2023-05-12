@@ -1,0 +1,380 @@
+Archivo: N:\escritorio\DEV\LA DATA\CODER\.C#\proyectofinal\Program.cs  
+using System;
+using System.Data.SqlClient;  // Importación del espacio de nombres System.Data.SqlClient 
+using Models;  // Importación del espacio de nombres Models
+using Microsoft.Extensions.Configuration;  // Importación del espacio de nombres Microsoft.Extensions.Configuration
+using Microsoft.Extensions.DependencyInjection;  // Importación del espacio de nombres Microsoft.Extensions.DependencyInjection
+using Microsoft.Extensions.Logging;  // Importación del espacio de nombres Microsoft.Extensions.Logging
+
+namespace MyProject
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IConfiguration config = new ConfigurationBuilder()  // Creación de una instancia ConfigurationBuilder
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)  // Agregar archivo JSON de configuración (opcional)
+                .Build();  // Construye y devuelve una instancia de IConfiguration
+
+            var services = new ServiceCollection();  // Creación de una colección de servicios
+
+            services.AddSingleton<IConfiguration>(config);  // Agregar instancia de config como una instancia única de servicio
+
+            services.AddLogging(builder =>  // Configuración del proveedor de registros
+            {
+                builder.AddConfiguration(config.GetSection("Logging"));  // Agregar configuración relacionada con los registros
+                builder.AddConsole();  // Agregar proveedor de registro para imprimir los registros a la consola
+            });
+
+            services.AddTransient<Usuario>();  // Agregar Usuario como una dependencia temporal
+            services.AddTransient<Producto>();  // Agregar Producto como una dependencia temporal
+            services.AddTransient<ProductoVendido>();  // Agregar ProductoVendido como una dependencia temporal
+            services.AddTransient<Venta>();  // Agregar Venta como una dependencia temporal
+
+            var serviceProvider = services.BuildServiceProvider();  // Construir la colección de servicios completa
+
+            try
+            {
+                // Cadena de conexion a la base de datos
+                string connectionString = config.GetConnectionString("MyConnectionString");  // Obtener la cadena de conexión de la configuración
+
+                using (SqlConnection connection = new SqlConnection(connectionString))  // Abrir la conexión a la base de datos y envolverla en una sentencia "using" para liberar los recursos automáticamente
+                {
+                    connection.Open();  // Abrir la conexión 
+                    var logger = serviceProvider.GetService<ILogger<Program>>();  // Obtener instancia de ILogger a través del proveedor de servicios
+                    logger.LogInformation("Conexion con la base de datos exitosa.");  // Registrar mensaje de información en el registro
+                }
+            }
+            catch (SqlException ex)  // Manejar la excepción SqlException
+            {
+                var logger = serviceProvider.GetService<ILogger<Program>>();  // Obtener instancia de ILogger a través del proveedor de servicios
+                logger.LogError(ex, "No se ha podido conectar a la base de datos.");  // Registrar mensaje de error en el registro
+                return;  // Salir de la aplicación en caso de error
+            }
+
+            var usuario = serviceProvider.GetService<Usuario>();  // Crear una instancia de Usuario a través del proveedor de servicios
+            var producto = serviceProvider.GetService<Producto>();  // Crear una instancia de Producto a través del proveedor de servicios
+            var productoVendido = serviceProvider.GetService<ProductoVendido>(); // Crear una instancia de ProductoVendido a través del proveedor de servicios
+            var venta = serviceProvider.GetService<Venta>();  // Crear una instancia de Venta a través del proveedor de servicios
+
+            Console.WriteLine("Hello, World!"); // Impresion de un mensaje en la consola
+        }
+    }
+}Archivo: N:\escritorio\DEV\LA DATA\CODER\.C#\proyectofinal\Project.csproj  
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Propiedades generales del proyecto -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType> <!-- Tipo de salida: Ejecutable -->
+    <TargetFramework>net5.0</TargetFramework> <!-- Plataforma de destino del proyecto: .NET 5.0 -->
+    <LangVersion>9</LangVersion> <!-- Version del lenguaje utilizado por el proyecto: C# 9 -->
+  </PropertyGroup>
+
+  <!-- Paquetes utilizados por el proyecto -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" /> <!-- Paquete para la lectura de configuraciones -->
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" /> <!-- Paquete para la lectura de configuraciones-->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" /> <!-- Paquete para la inyeccion de dependencias -->
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" /> <!-- Paquete para la configuracion y uso del logging -->
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" /> <!-- Paquete para la impresion de los logs en la consola -->
+  </ItemGroup>
+
+  <!-- 
+  Configuracion de los archivos de origen y destino de la compilacion, incluyendo la 
+  exclusion de archivos especificos, y la configuracion de variables adicionales que se 
+  pueden utilizar durante la compilacion o en el codigo.
+  -->
+  <ItemGroup>
+    <Compile Remove="bin\**" /> <!-- Se excluyen todos los archivos dentro de la carpeta bin -->
+    <Compile Remove="obj\**" /> <!-- Se excluyen todos los archivos dentro de la carpeta obj -->
+    <!-- Se incluyen todos los archivos dentro de la carpeta Models -->
+    <Compile Include="Models\**" />
+    <!-- Se incluyen los archivos necesarios de la carpeta Properties -->
+    <Compile Include="Properties\launchSettings.json" />
+    <Compile Include="Properties\Settings.Designer.cs" />
+  </ItemGroup>
+
+  <!-- Referencia al proyecto de base de datos -->
+  <ItemGroup>
+    <ProjectReference Include="Ruta\Al\Proyecto\De\BaseDeDatos.csproj" />
+  </ItemGroup>
+
+</Project>Archivo: N:\escritorio\DEV\LA DATA\CODER\.C#\proyectofinal\models\Producto.cs  
+using System;
+
+namespace Models
+{
+    public class Producto
+    {
+        // Propiedades del producto
+        public int Id { get; set; } // Identificador unico del producto
+        public string Descripcion { get; set; } // Descripcion del producto
+        public double Costo { get; set; } // Costo de produccion del producto
+        public double PrecioVenta { get; set; } // Precio de venta del producto
+        public int Stock { get; set; } // Cantidad en stock del producto
+        public int IdUsuario { get; set; } // Identificador del usuario que creo el producto
+
+        // Constructor por defecto
+        public Producto()
+        {
+            // Mensaje de creacion de la instancia de Producto
+            Console.WriteLine("La instancia de Producto se ha creado satisfactoriamente.");
+        }
+
+        // Constructor con argumentos
+        public Producto(int id, string descripcion, double costo, double precioVenta, int stock, int idUsuario)
+        {
+            // Validacion de parametros
+            if (string.IsNullOrWhiteSpace(descripcion))
+            {
+                throw new ArgumentException("La descripcion no puede ser nula o vacia.");
+            }
+
+            if (costo < 0)
+            {
+                throw new ArgumentException("El costo no puede ser negativo.");
+            }
+
+            if (precioVenta < 0)
+            {
+                throw new ArgumentException("El precio de venta no puede ser negativo.");
+            }
+
+            if (stock < 0)
+            {
+                throw new ArgumentException("La cantidad en stock no puede ser negativa.");
+            }
+
+            // Inicializacion de las propiedades por medio de los argumentos
+            Id = id;
+            Descripcion = descripcion;
+            Costo = costo;
+            PrecioVenta = precioVenta;
+            Stock = stock;
+            IdUsuario = idUsuario;
+
+            // Mensaje de creacion de la instancia de Producto
+            Console.WriteLine("La instancia de Producto se ha creado satisfactoriamente.");
+        }
+    }
+}Archivo: N:\escritorio\DEV\LA DATA\CODER\.C#\proyectofinal\models\ProductoVendido.cs  
+using System;
+
+namespace Models
+{
+    public class ProductoVendido
+    {
+        // Propiedades del producto vendido
+        public int Id { get; set; } // Identificador unico del producto vendido
+        public int IdProducto { get; set; } // Identificador del producto que se vendio
+        public int Stock { get; set; } // Cantidad del producto que se vendio
+        public int IdVenta { get; set; } // Identificador de la venta a la que pertenece el producto vendido
+        public double PrecioUnitario { get; set; } // Precio unitario del producto vendido
+
+        // Constructor por defecto
+        public ProductoVendido()
+        {
+            // Mensaje de creacion de la instancia de ProductoVendido
+            Console.WriteLine("La instancia de ProductoVendido se ha creado satisfactoriamente.");
+        }
+
+        // Constructor con argumentos
+        public ProductoVendido(int id, int idProducto, int stock, int idVenta)
+        {
+            // Inicializacion de las propiedades por medio de los argumentos
+            Id = id;
+            IdProducto = idProducto;
+            Stock = stock;
+            IdVenta = idVenta;
+
+            // Mensaje de creacion de la instancia de ProductoVendido
+            Console.WriteLine("La instancia de ProductoVendido se ha creado satisfactoriamente.");
+        }
+    }
+}Archivo: N:\escritorio\DEV\LA DATA\CODER\.C#\proyectofinal\models\Usuario.cs  
+using System;
+
+namespace Models
+{
+    public class Usuario
+    {
+        // Campos privados de la clase Usuario
+        // Cada propiedad correspondiente se utiliza para acceder y modificar estos campos privados
+        private int id; // Identificador único del usuario
+        private string nombre; // Nombre del usuario
+        private string apellido; // Apellido del usuario
+        private string nombreUsuario; // Nombre de usuario del usuario (debe ser único)
+        private string contrasena; // Contraseña del usuario
+        private string mail; // Dirección de correo electrónico del usuario
+        private DateTime fechaCreacion; // Fecha de creación del usuario
+
+        // Propiedades públicas de la clase Usuario
+        // Cada propiedad establece sus propias reglas de validación (cuando es necesario)
+        public int Id 
+        { 
+            get { return id; } 
+            set { id = value; } 
+        }
+
+        public string Nombre
+        {
+            get { return nombre; }
+            set { nombre = value; }
+        }
+
+        public string Apellido
+        {
+            get { return apellido; }
+            set { apellido = value; }
+        }
+
+        public string NombreUsuario
+        {
+            get { return nombreUsuario; }
+            set 
+            { 
+                // Validación del nombre de usuario
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("El nombre de usuario no puede ser nulo o vacío.");
+                }
+
+                nombreUsuario = value; 
+            }
+        }
+
+        public string Contrasena
+        {
+            get { return contrasena; }
+            set { contrasena = value; }
+        }
+
+        public string Mail
+        {
+            get { return mail; }
+            set 
+            {
+                // Validación del correo electrónico
+                if (!IsValidEmail(value))
+                {
+                    throw new ArgumentException("El formato del correo electrónico no es válido.");
+                }
+
+                mail = value; 
+            }
+        }
+
+        public DateTime FechaCreacion 
+        { 
+            get { return fechaCreacion; } 
+            set { fechaCreacion = value; }
+        }
+
+        // Constructor sin argumentos de la clase Usuario
+        public Usuario()
+        {
+            // Inicialización de los campos privados a valores predeterminados
+            id = 0;
+            nombre = null;
+            apellido = null;
+            nombreUsuario = null;
+            contrasena = null;
+            mail = null;
+            fechaCreacion = DateTime.Now;
+
+            // Mensaje de creación de la instancia de Usuario
+            Console.WriteLine("La instancia de Usuario se ha creado satisfactoriamente.");
+        }
+
+        // Constructor con argumentos de la clase Usuario
+        public Usuario(int id, string nombre, string apellido, string nombreUsuario, string contrasena, string mail)
+        {
+            // Validación de parámetros
+            if (string.IsNullOrWhiteSpace(nombre))
+            {
+                throw new ArgumentException("El nombre no puede ser nulo o vacío.");
+            }
+
+            if (string.IsNullOrWhiteSpace(apellido))
+            {
+                throw new ArgumentException("El apellido no puede ser nulo o vacío.");
+            }
+
+            if (string.IsNullOrWhiteSpace(nombreUsuario))
+            {
+                throw new ArgumentException("El nombre de usuario no puede ser nulo o vacío.");
+            }
+
+            if (string.IsNullOrWhiteSpace(contrasena))
+            {
+                throw new ArgumentException("La contraseña no puede ser nula o vacía.");
+            }
+
+            if (!IsValidEmail(mail))
+            {
+                throw new ArgumentException("El formato del correo electrónico no es válido.");
+            }
+
+            // Inicialización de los campos privados por medio de las propiedades públicas
+            this.id = id;
+            this.nombre = nombre;
+            this.apellido = apellido;
+            this.nombreUsuario = nombreUsuario;
+            this.contrasena = contrasena;
+            this.mail = mail;
+            fechaCreacion = DateTime.Now;
+
+            // Mensaje de creación de la instancia de Usuario
+            Console.WriteLine("La instancia de Usuario se ha creado satisfactoriamente.");
+        }
+
+        // Método privado para validar el formato del correo electrónico
+        private static bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+}Archivo: N:\escritorio\DEV\LA DATA\CODER\.C#\proyectofinal\models\Venta.cs  
+using System;
+
+namespace Models
+{
+    public class Venta
+    {
+        // Propiedades de la venta
+        public int Id { get; set; } // Identificador unico de la venta
+        public string Comentarios { get; set; } // Descripcion o comentarios de la venta
+        public int IdUsuario { get; set; } // Identificador del usuario que realizo la venta
+        public DateTime Fecha { get; set; } // Fecha de la venta
+
+        // Constructor por defecto
+        public Venta()
+        {
+            Fecha = DateTime.Now;
+
+            // Mensaje de creacion de la instancia de Venta
+            Console.WriteLine("La instancia de Venta se ha creado satisfactoriamente.");
+        }
+
+        // Constructor con argumentos
+        public Venta(int id, string comentarios, int idUsuario)
+        {
+            // Inicializacion de las propiedades por medio de los argumentos
+            Id = id;
+            Comentarios = comentarios;
+            IdUsuario = idUsuario;
+            Fecha = DateTime.Now;
+
+            // Mensaje de creacion de la instancia de Venta
+            Console.WriteLine("La instancia de Venta se ha creado satisfactoriamente.");
+        }
+    }
+}
