@@ -4,7 +4,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType> <!-- Tipo de salida: Ejecutable -->
     <TargetFramework>net5.0</TargetFramework> <!-- Plataforma de destino del proyecto: .NET 5.0 -->
-    <LangVersion>9</LangVersion> <!-- Versión del lenguaje utilizado por el proyecto: C# 9 -->
+    <LangVersion>9</LangVersion> <!-- Version del lenguaje utilizado por el proyecto: C# 9 -->
   </PropertyGroup>
 
   <!-- Paquetes utilizados por el proyecto -->
@@ -16,9 +16,9 @@
   </ItemGroup>
 
   <!-- 
-  Configuración de los archivos de origen y destino de la compilación, incluyendo la 
-  exclusión de archivos específicos, y la configuración de variables adicionales que se 
-  pueden utilizar durante la compilación o en el código.
+  Configuracion de los archivos de origen y destino de la compilacion, incluyendo la 
+  exclusion de archivos especificos, y la configuracion de variables adicionales que se 
+  pueden utilizar durante la compilacion o en el codigo.
   -->
   <ItemGroup>
     <Compile Remove="bin\**" /> <!-- Se excluyen todos los archivos dentro de la carpeta bin -->

@@ -1,8 +1,8 @@
 public class Producto
 {
     // Propiedades del producto
-    public int Id { get; set; } // Identificador único del producto
-    public string Descripcion { get; set; } // Descripción del producto
+    public int Id { get; set; } // Identificador unico del producto
+    public string Descripcion { get; set; } // Descripcion del producto
     public double Costo
     {
         get { return costo; }
@@ -15,7 +15,7 @@ public class Producto
 
             costo = value;
         }
-    } // Costo de producción del producto
+    } // Costo de produccion del producto
     public double PrecioVenta
     {
         get { return precioVenta; }
@@ -42,7 +42,7 @@ public class Producto
             stock = value;
         }
     } // Cantidad en stock del producto
-    public int IdUsuario { get; set; } // Identificador del usuario que creó el producto
+    public int IdUsuario { get; set; } // Identificador del usuario que creo el producto
 
     // Campo privado utilizado por las propiedades de Costo, PrecioVenta y Stock
     private double costo;
@@ -52,7 +52,7 @@ public class Producto
     // Constructor sin argumentos de la clase Producto
     public Producto()
     {
-        // Inicialización de las propiedades a valores predeterminados
+        // Inicializacion de las propiedades a valores predeterminados
         Id = 0;
         Descripcion = null;
         Costo = 0.0;
@@ -60,17 +60,17 @@ public class Producto
         Stock = 0;
         IdUsuario = 0;
 
-        // Mensaje de creación de la instancia de Producto
+        // Mensaje de creacion de la instancia de Producto
         Console.WriteLine("La instancia de Producto se ha creado satisfactoriamente.");
     }
 
     // Constructor de la clase Producto con argumentos
     public Producto(int id, string descripcion, double costo, double precioVenta, int stock, int idUsuario)
     {
-        // Validación de parámetros
+        // Validacion de parametros
         if (string.IsNullOrWhiteSpace(descripcion))
         {
-            throw new ArgumentException("La descripción no puede ser nula o vacía.");
+            throw new ArgumentException("La descripcion no puede ser nula o vacia.");
         }
 
         if (costo < 0)
@@ -88,7 +88,7 @@ public class Producto
             throw new ArgumentException("La cantidad en stock no puede ser negativa.");
         }
 
-        // Inicialización de las propiedades por medio de las propiedades públicas
+        // Inicializacion de las propiedades por medio de las propiedades publicas
         Id = id;
         Descripcion = descripcion;
         Costo = costo;
@@ -96,7 +96,7 @@ public class Producto
         Stock = stock;
         IdUsuario = idUsuario;
 
-        // Mensaje de creación de la instancia de Producto
+        // Mensaje de creacion de la instancia de Producto
         Console.WriteLine("La instancia de Producto se ha creado satisfactoriamente.");
     }
 }
