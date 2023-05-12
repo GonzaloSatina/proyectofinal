@@ -1,8 +1,8 @@
 public class Producto
 {
     // Propiedades del producto
-    public int Id { get; set; }
-    public string Descripcion { get; set; }
+    public int Id { get; set; } // Identificador único del producto
+    public string Descripcion { get; set; } // Descripción del producto
     public double Costo
     {
         get { return costo; }
@@ -15,8 +15,7 @@ public class Producto
 
             costo = value;
         }
-    }
-
+    } // Costo de producción del producto
     public double PrecioVenta
     {
         get { return precioVenta; }
@@ -29,8 +28,7 @@ public class Producto
 
             precioVenta = value;
         }
-    }
-
+    } // Precio de venta del producto
     public int Stock
     {
         get { return stock; }
@@ -43,9 +41,13 @@ public class Producto
 
             stock = value;
         }
-    }
+    } // Cantidad en stock del producto
+    public int IdUsuario { get; set; } // Identificador del usuario que creó el producto
 
-    public int IdUsuario { get; set; }
+    // Campo privado utilizado por las propiedades de Costo, PrecioVenta y Stock
+    private double costo;
+    private double precioVenta;
+    private int stock;
 
     // Constructor sin argumentos de la clase Producto
     public Producto()

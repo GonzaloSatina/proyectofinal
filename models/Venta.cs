@@ -1,11 +1,11 @@
 public class Venta
 {
     // Propiedades de la venta
-    public int Id { get; set; }
-    public string Comentarios { get; set; }
-    public int IdUsuario { get; set; }
+    public int Id { get; set; } // Identificador único de la venta
+    public string Comentarios { get; set; } // Descripción o comentarios de la venta
+    public int IdUsuario { get; set; } // Identificador del usuario que realizó la venta
 
-    public DateTime Fecha { get; set; }
+    public DateTime Fecha { get; set; } // Fecha de la venta
 
     // Constructor sin argumentos de la clase Venta
     public Venta()

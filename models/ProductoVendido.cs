@@ -1,12 +1,12 @@
 public class ProductoVendido
 {
     // Propiedades del producto vendido
-    public int Id { get; set; }
-    public int IdProducto { get; set; }
-    public int Stock { get; set; }
-    public int IdVenta { get; set; }
+    public int Id { get; set; } // Identificador único del producto vendido
+    public int IdProducto { get; set; } // Identificador del producto que se vendió
+    public int Stock { get; set; } // Cantidad del producto que se vendió
+    public int IdVenta { get; set; } // Identificador de la venta a la que pertenece el producto vendido
 
-    public double PrecioUnitario { get; set; }
+    public double PrecioUnitario { get; set; } // Precio unitario del producto vendido
 
     // Constructor sin argumentos de la clase ProductoVendido
     public ProductoVendido()

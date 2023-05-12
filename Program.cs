@@ -1,7 +1,7 @@
 using System;
-using Models; // Importación del espacio de nombres Models
-using System.Data.SqlClient; // Importación del proveedor para SQL Server
-using System.Configuration; // Importación del administrador de configuración
+using System.Data.SqlClient; // Espacio de nombres para el proveedor de SQL Server
+using Models; // Espacio de nombres para los modelos
+using System.Configuration; // Espacio de nombres para el administrador de configuración
 
 namespace MyProject
 {
@@ -14,7 +14,7 @@ namespace MyProject
                 // Cadena de conexión a la base de datos
                 string connectionString = ConfigurationManager.ConnectionStrings["MyConnectionString"].ConnectionString;
 
-                // Testeo de la conexión a la base de datos
+                // Probar la conexión a la base de datos
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();

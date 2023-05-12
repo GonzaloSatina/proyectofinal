@@ -3,15 +3,17 @@ using System;
 public class Usuario
 {
     // Campos privados de la clase Usuario
-    private int id;
-    private string nombre;
-    private string apellido;
-    private string nombreUsuario;
-    private string contrasena;
-    private string mail;
-    private DateTime fechaCreacion;
+    // Cada propiedad correspondiente se utiliza para acceder y modificar estos campos privados
+    private int id; // Identificador único del usuario
+    private string nombre; // Nombre del usuario
+    private string apellido; // Apellido del usuario
+    private string nombreUsuario; // Nombre de usuario del usuario (debe ser único)
+    private string contrasena; // Contraseña del usuario
+    private string mail; // Dirección de correo electrónico del usuario
+    private DateTime fechaCreacion; // Fecha de creación del usuario
 
-    // Propiedades publicas de la clase Usuario
+    // Propiedades públicas de la clase Usuario
+    // Cada propiedad establece sus propias reglas de validación (cuando es necesario)
     public int Id 
     { 
         get { return id; } 
